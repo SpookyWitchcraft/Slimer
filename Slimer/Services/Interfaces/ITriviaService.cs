@@ -1,4 +1,4 @@
-﻿namespace Slimer
+﻿namespace Slimer.Services.Interfaces
 {
     public interface ITriviaService
     {
