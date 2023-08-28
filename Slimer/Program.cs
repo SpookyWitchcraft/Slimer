@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<IHttpClientProxy, HttpClientProxy>();
 builder.Services.AddSingleton<ITriviaService, TriviaService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();
+builder.Services.AddSingleton<IChatGptService, ChatGptService>();
 
 var app = builder.Build();
 

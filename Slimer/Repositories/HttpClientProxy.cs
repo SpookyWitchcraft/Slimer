@@ -20,5 +20,14 @@ namespace Slimer.Repositories
 
             return JsonConvert.DeserializeObject<T>(results)!;
         }
+
+        public async Task<T> SendAsync<T>(HttpRequestMessage content)
+        {
+            var response = await _httpClient.SendAsync(content);
+
+            var results = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<T>(results)!;
+        }
     }
 }
