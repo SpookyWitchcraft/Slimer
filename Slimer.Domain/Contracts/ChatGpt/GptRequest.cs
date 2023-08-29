@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Slimer.Contracts.ChatGpt
+namespace Slimer.Domain.Contracts.ChatGpt
 {
-    internal class GptRequest
+    public class GptRequest
     {
         [JsonProperty("model")]
         public string? Model { get; set; }
@@ -14,7 +14,7 @@ namespace Slimer.Contracts.ChatGpt
         public double? Temperature { get; set; }
     }
 
-    internal class GptMessage
+    public class GptMessage
     {
         [JsonProperty("role")]
         public string? Role { get; set; }

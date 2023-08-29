@@ -1,4 +1,4 @@
-﻿using Slimer.Contracts.Marvel;
+﻿using Slimer.Domain.Contracts.Marvel;
 
 namespace Slimer.Services.Interfaces
 {

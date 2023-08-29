@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Slimer.Repositories.Interfaces;
+using Slimer.Infrastructure.Modules.Api.Interfaces;
 
-namespace Slimer.Repositories
+namespace Slimer.Infrastructure.Modules.Api
 {
     public class HttpClientProxy : IHttpClientProxy
     {
