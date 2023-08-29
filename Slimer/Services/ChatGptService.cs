@@ -16,16 +16,16 @@ namespace Slimer.Services
             _client = client;
         }
 
-        public async Task<IEnumerable<char[]>> GetAnswerAsync(string question)
+        public async Task<IEnumerable<string>> GetAnswerAsync(string question)
         {
             var request = CreateRequest(CreateContent(question), "https://api.openai.com/v1/chat/completions");
 
             var response = await _client.SendAsync<GptResponse>(request);
 
             if (response?.Choices != null && response.Choices.Count > 0)
-                return response.Choices[0].Message.Content.Chunk(120);
+                return response.Choices[0].Message.Content.Chunk(120).Select(x => new string(x));
 
-            var def = new char[1][ ] { "I'm a big dumb AI and couldn't figure this out 🧠".ToCharArray() };
+            var def = new string[] { "I'm a big dumb AI and couldn't figure this out 🧠" };
             
             return def;
         }
