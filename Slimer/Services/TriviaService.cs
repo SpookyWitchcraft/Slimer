@@ -50,9 +50,9 @@ namespace Slimer.Services
         {
             return new TriviaQuestion(
                 Bind<int>(reader, "TriviaQuestionId")
-                , Bind<string>(reader, "Category")
                 , Bind<string>(reader, "Question")
                 , Bind<string>(reader, "Answer")
+                , Bind<string>(reader, "Category")
                 , Bind<bool>(reader, "IsEnabled")
                 , Bind<DateTime>(reader, "CreatedDate")
                 , Bind<DateTime>(reader, "UpdatedDate")
