@@ -7,7 +7,7 @@ namespace Slimer.Infrastructure.Modules.Sql.Interfaces
     {
         Task Execute(string storedProcedure, IEnumerable<SqlParameter> parameters = default!);
 
-        Task<List<T>> ReadList<T>(Func<IDataReader, T> loader, string storedProcedure, IEnumerable<SqlParameter> parameters = default!) where T : new();
+        Task<List<T>> ReadList<T>(Func<IDataReader, T> loader, string storedProcedure, IEnumerable<SqlParameter> parameters = default!);
 
         Task<T> Read<T>(Func<IDataReader, T> loader, string storedProcedure, IEnumerable<SqlParameter> parameters = default!);
 

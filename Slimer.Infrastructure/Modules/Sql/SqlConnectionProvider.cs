@@ -1,4 +1,5 @@
 ﻿using Slimer.Infrastructure.Modules.Sql.Interfaces;
+using Slimer.Infrastructure.Services.Interfaces;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
@@ -8,16 +9,18 @@ namespace Slimer.Infrastructure.Modules.Sql
     [ExcludeFromCodeCoverage]
     public class SqlConnectionProvider : ISqlConnectionProvider
     {
-        private readonly string _connectionString;
+        private readonly ISecretsService _secretsService;
 
-        public SqlConnectionProvider(string connectionString)
+        public SqlConnectionProvider(ISecretsService secretsService)
         {
-            _connectionString = connectionString;
+            _secretsService = secretsService;
         }
 
         public async Task<IDbConnection> GetSqlConnection()
         {
-            var connection = new SqlConnection(_connectionString);
+            var connectionString = _secretsService.GetValue("SQLConnectionString");
+
+            var connection = new SqlConnection(connectionString);
 
             await connection.OpenAsync();
 

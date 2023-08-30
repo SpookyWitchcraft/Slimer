@@ -1,7 +1,9 @@
-﻿namespace Slimer.Services.Interfaces
+﻿using Slimer.Domain.Contracts.Trivia;
+
+namespace Slimer.Services.Interfaces
 {
     public interface ITriviaService
     {
-        TriviaQuestion GetQuestion();
+        Task<TriviaQuestion> GetQuestionAsync();
     }
 }

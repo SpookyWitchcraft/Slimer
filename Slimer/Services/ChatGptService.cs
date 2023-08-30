@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Slimer.Domain.Contracts.ChatGpt;
 using Slimer.Infrastructure.Modules.Api.Interfaces;
+using Slimer.Infrastructure.Services.Interfaces;
 using Slimer.Services.Interfaces;
 using System.Net.Http.Headers;
 using System.Text;
@@ -10,10 +11,12 @@ namespace Slimer.Services
     public class ChatGptService : IChatGptService
     {
         private readonly IHttpClientProxy _client;
+        private readonly ISecretsService _secretsService;
 
-        public ChatGptService(IHttpClientProxy client)
+        public ChatGptService(IHttpClientProxy client, ISecretsService secretsService)
         {
             _client = client;
+            _secretsService = secretsService;
         }
 
         public async Task<IEnumerable<string>> GetAnswerAsync(string question)
@@ -58,7 +61,7 @@ namespace Slimer.Services
                 RequestUri = new Uri(url),
             };
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("chatKey"));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _secretsService.GetValue("ChatGPTKey"));
 
             return request;
         }
