@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slimer.Infrastructure.Services.Interfaces
+﻿namespace Slimer.Infrastructure.Services.Interfaces
 {
     public interface ISecretsService
     {
+        Dictionary<string, string> Secrets { get; }
+
+        string GetValue(string key);
     }
 }

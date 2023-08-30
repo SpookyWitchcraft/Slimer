@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Slimer.Infrastructure.Services;
 
 namespace Slimer.Controllers
 {
@@ -10,9 +9,7 @@ namespace Slimer.Controllers
         [HttpGet("")]
         public IActionResult Get()
         {
-            var message = SecretsService.TryIt();
-
-            return Ok(message);
+            return Ok();
         }
     }
 }

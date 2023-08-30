@@ -15,9 +15,9 @@ namespace Slimer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var q = _service.GetQuestion();
+            var q = await _service.GetQuestionAsync();
 
             return Ok(q);
         }

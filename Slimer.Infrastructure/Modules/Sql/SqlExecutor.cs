@@ -26,7 +26,7 @@ namespace Slimer.Infrastructure.Modules.Sql
             await _command.ExecuteNonQueryAsync(command);
         }
 
-        public async Task<List<T>> ReadList<T>(Func<IDataReader, T> loader, string storedProcedure, IEnumerable<SqlParameter> parameters = default!) where T : new()
+        public async Task<List<T>> ReadList<T>(Func<IDataReader, T> loader, string storedProcedure, IEnumerable<SqlParameter> parameters = default!)
         {
             var result = new List<T>();
 

@@ -7,8 +7,13 @@ namespace Slimer.Infrastructure.Services
 {
     public class SecretsService : ISecretsService
     {
-        public static string TryIt()
+        public Dictionary<string, string> Secrets { get; } = new Dictionary<string, string>();
+
+        public string GetValue(string key)
         {
+            if (Secrets.ContainsKey(key))
+                return Secrets[key];
+
             var options = new SecretClientOptions()
             {
                 Retry =
@@ -21,9 +26,7 @@ namespace Slimer.Infrastructure.Services
             };
             var client = new SecretClient(new Uri("https://spookywitchcraft-vault.vault.azure.net/"), new DefaultAzureCredential(), options);
 
-            KeyVaultSecret secret = client.GetSecret("testSecret");
-
-            return secret.Value;
+            return ((KeyVaultSecret)client.GetSecret(key)).Value;
         }
     }
 }
