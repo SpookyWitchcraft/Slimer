@@ -1,4 +1,4 @@
-﻿namespace Slimer.Repositories.Interfaces
+﻿namespace Slimer.Infrastructure.Modules.Api.Interfaces
 {
     public interface IHttpClientProxy
     {

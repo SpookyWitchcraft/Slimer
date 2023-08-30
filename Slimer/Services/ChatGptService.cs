@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Slimer.Contracts.ChatGpt;
-using Slimer.Repositories.Interfaces;
+using Slimer.Domain.Contracts.ChatGpt;
+using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Services.Interfaces;
 using System.Net.Http.Headers;
 using System.Text;

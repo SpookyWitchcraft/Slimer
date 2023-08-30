@@ -1,5 +1,5 @@
-using Slimer.Repositories;
-using Slimer.Repositories.Interfaces;
+using Slimer.Infrastructure.Modules.Api;
+using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Services;
 using Slimer.Services.Interfaces;
 

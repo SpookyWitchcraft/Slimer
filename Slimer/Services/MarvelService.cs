@@ -1,5 +1,5 @@
-﻿using Slimer.Contracts.Marvel;
-using Slimer.Repositories.Interfaces;
+﻿using Slimer.Domain.Contracts.Marvel;
+using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Services.Interfaces;
 using System.Security.Cryptography;
 using System.Text;

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Slimer.Contracts.ChatGpt
+namespace Slimer.Domain.Contracts.ChatGpt
 {
     public class GptResponse
     {

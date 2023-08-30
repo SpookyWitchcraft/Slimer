@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Slimer.Contracts.Marvel
+namespace Slimer.Domain.Contracts.Marvel
 {
     public class MarvelCharacterResponse
     {
