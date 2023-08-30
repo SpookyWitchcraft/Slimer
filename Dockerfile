@@ -7,6 +7,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 COPY ["Slimer/Slimer.csproj", "Slimer/"]
+COPY ["Slimer.Domain/Slimer.Domain.csproj", "Slimer/"]
+COPY ["Slimer.Infrastructure/Slimer.Infrastructure.csproj", "Slimer/"]
 COPY ["nuget.config", ""]
 
 RUN dotnet restore "Slimer/Slimer.csproj"
