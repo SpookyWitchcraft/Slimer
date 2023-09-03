@@ -15,7 +15,10 @@
 
   <ItemGroup>
     <Folder Include="Repositories\Api\Interfaces\" />
-    <Folder Include="Repositories\Sql\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Slimer.Domain\Slimer.Domain.csproj" />
   </ItemGroup>
 
 </Project>
