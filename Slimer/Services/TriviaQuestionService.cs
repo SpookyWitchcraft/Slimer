@@ -18,7 +18,7 @@ namespace Slimer.Services
         public async Task<TriviaQuestion> GetQuestionAsync()
         {
             if (_questions == null || _questions.Length < 1)
-                await _repository.GetQuestionsAsync();
+                await GetQuestionsAsync();
 
             var rand = new Random();
 
