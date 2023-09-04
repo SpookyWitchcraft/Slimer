@@ -2,6 +2,8 @@ using Slimer.Infrastructure.Modules.Api;
 using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Infrastructure.Modules.Sql;
 using Slimer.Infrastructure.Modules.Sql.Interfaces;
+using Slimer.Infrastructure.Repositories.Api;
+using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Infrastructure.Repositories.Sql;
 using Slimer.Infrastructure.Repositories.Sql.Interfaces;
 using Slimer.Infrastructure.Services;
@@ -30,7 +32,9 @@ builder.Services.AddTransient<ISqlCommandProvider, SqlCommandProvider>();
 builder.Services.AddTransient<ISqlConnectionProvider, SqlConnectionProvider>();
 builder.Services.AddTransient<ISqlExecutor, SqlExecutor>();
 builder.Services.AddTransient<ITriviaQuestionRepository, TriviaQuestionRepository>();
+builder.Services.AddTransient<IGitHubRepository, GitHubRepository>();
 builder.Services.AddSingleton<ITriviaQuestionService, TriviaQuestionService>();
+builder.Services.AddSingleton<IGitHubService, GitHubService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();
 builder.Services.AddSingleton<IChatGptService, ChatGptService>();
 
