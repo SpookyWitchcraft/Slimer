@@ -41,18 +41,12 @@ namespace Slimer.Controllers
             return Ok(q);
         }
 
-        //[HttpPost("")]
-        //public async Task<IActionResult> Post(TriviaQuestion question)
-        //{
-        //    var results = await _service.SaveAsync(question);
-
-        //    return Ok(results);
-        //}
-
         [HttpPost("")]
-        public ActionResult Post(TriviaQuestion question)
+        public async Task<IActionResult> Post(TriviaQuestion question)
         {
-            return Ok();
+            var results = await _service.SaveAsync(question);
+
+            return Ok(results);
         }
 
         [HttpGet("invalidate")]
