@@ -48,7 +48,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.Authority = secrets.GetValue("Auth0Domain");
         options.Audience = secrets.GetValue("Auth0Audience");
-        options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true
+        };
     });
 
 var app = builder.Build();
