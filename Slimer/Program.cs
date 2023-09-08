@@ -43,13 +43,13 @@ builder.Services.AddSingleton<IGitHubService, GitHubService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();
 builder.Services.AddSingleton<IChatGptService, ChatGptService>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = secrets.GetValue("Auth0Domain");
-        options.Audience = secrets.GetValue("Auth0Audience");
-        options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
-    });
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.Authority = secrets.GetValue("Auth0Domain");
+//        options.Audience = secrets.GetValue("Auth0Audience");
+//        options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
+//    });
 
 var app = builder.Build();
 
