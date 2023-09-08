@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Slimer.Infrastructure.Modules.Api;
 using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Infrastructure.Modules.Sql;
@@ -10,6 +12,7 @@ using Slimer.Infrastructure.Services;
 using Slimer.Infrastructure.Services.Interfaces;
 using Slimer.Services;
 using Slimer.Services.Interfaces;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +29,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ISecretsService, SecretsService>();
+var secrets = new SecretsService();
+
+builder.Services.AddSingleton<ISecretsService>(secrets);
 builder.Services.AddHttpClient<IHttpClientProxy, HttpClientProxy>();
 builder.Services.AddTransient<ISqlCommandProvider, SqlCommandProvider>();
 builder.Services.AddTransient<ISqlConnectionProvider, SqlConnectionProvider>();
@@ -38,6 +43,14 @@ builder.Services.AddSingleton<IGitHubService, GitHubService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();
 builder.Services.AddSingleton<IChatGptService, ChatGptService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = secrets.GetValue("Auth0Domain");
+        options.Audience = secrets.GetValue("Auth0Audience");
+        options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
+    });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -47,6 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("calavera");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Slimer.Services.Interfaces;
 
 namespace Slimer.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ChatGptController : ControllerBase
     {
