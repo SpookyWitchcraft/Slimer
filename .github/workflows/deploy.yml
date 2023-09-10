@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: '6.0.x'
     - name: Install dependencies
-      run: dotnet restore Slimer.csproj
+      run: dotnet restore Slimer/Slimer.csproj
     - name: Build
       run: dotnet build slimer/slimer
     - name: Test with the dotnet CLI
