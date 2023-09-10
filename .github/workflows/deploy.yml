@@ -15,18 +15,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - run: cd  ${{ inputs.working_directory }}
     - uses: actions/checkout@v3
     - name: Setup dotnet
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
     - name: Install dependencies
-      run: dotnet restore ./slimer
+      run: dotnet restore slimer/slimer
     - name: Build
-      run: dotnet build ./slimer
+      run: dotnet build slimer/slimer
     - name: Test with the dotnet CLI
-      run: dotnet test ./slimer
+      run: dotnet test slimer/slimer
 
   build:
     if: github.event.pull_request.merged == true
