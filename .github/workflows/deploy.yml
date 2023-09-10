@@ -20,12 +20,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
-    - name: Learn something
-      run: |
-        ls -la
-        ${{ github.workspace }}
     - name: Install dependencies
-      run: dotnet restore ./slimer.sln
+      run: dotnet restore ./Slimer.sln
     - name: Build
       run: dotnet build slimer/slimer
     - name: Test with the dotnet CLI
