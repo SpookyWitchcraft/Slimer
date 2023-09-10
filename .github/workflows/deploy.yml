@@ -21,11 +21,11 @@ jobs:
       with:
         dotnet-version: '6.0.x'
     - name: Install dependencies
-      run: dotnet restore Slimer/Slimer.csproj
+      run: dotnet restore Slimer/Slimer.sln
     - name: Build
-      run: dotnet build slimer/slimer
+      run: dotnet build Slimer/Slimer.sln
     - name: Test with the dotnet CLI
-      run: dotnet test slimer/slimer
+      run: dotnet test Slimer/Slimer.sln
 
   build:
     if: github.event.pull_request.merged == true
