@@ -12,7 +12,6 @@ using Slimer.Infrastructure.Services;
 using Slimer.Infrastructure.Services.Interfaces;
 using Slimer.Services;
 using Slimer.Services.Interfaces;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +37,8 @@ builder.Services.AddTransient<ISqlConnectionProvider, SqlConnectionProvider>();
 builder.Services.AddTransient<ISqlExecutor, SqlExecutor>();
 builder.Services.AddTransient<ITriviaQuestionRepository, TriviaQuestionRepository>();
 builder.Services.AddTransient<IGitHubRepository, GitHubRepository>();
+builder.Services.AddTransient<IMarvelRepository, MarvelRepository>();
+builder.Services.AddTransient<IChatGptRepository, ChatGptRepository>();
 builder.Services.AddSingleton<ITriviaQuestionService, TriviaQuestionService>();
 builder.Services.AddSingleton<IGitHubService, GitHubService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();

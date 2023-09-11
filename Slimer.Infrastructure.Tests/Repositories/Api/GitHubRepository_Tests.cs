@@ -38,7 +38,7 @@ namespace Slimer.Infrastructure.Tests.Repositories.Api
         {
             var repo = new GitHubRepository(_clientMock, _secretsMock);
 
-            var results = await repo.CreateIssueAsync(new GitHubRequest());
+            var results = await repo.PostIssueAsync(new GitHubRequest());
 
             Assert.NotNull(results);
         }

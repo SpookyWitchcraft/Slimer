@@ -19,7 +19,7 @@ namespace Slimer.Controllers
         [HttpGet("{question}")]
         public async Task<IActionResult> Get(string question)
         {
-            var answer = await _service.GetAnswerAsync(question);
+            var answer = await _service.AskAnswerAsync(question);
 
             return Ok(answer);
         }

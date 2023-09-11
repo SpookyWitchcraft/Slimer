@@ -4,6 +4,6 @@ namespace Slimer.Infrastructure.Repositories.Api.Interfaces
 {
     public interface IGitHubRepository
     {
-        Task<GitHubResponse> CreateIssueAsync(GitHubRequest request);
+        Task<GitHubResponse> PostIssueAsync(GitHubRequest request);
     }
 }

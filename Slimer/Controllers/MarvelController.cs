@@ -19,7 +19,7 @@ namespace Slimer.Controllers
         [HttpGet("{characterName}")]
         public async Task<IActionResult> Get(string characterName)
         {
-            var character = await _service.GetCharacterDetailsAsync(characterName);
+            var character = await _service.SearchForCharacterDetailsAsync(characterName);
 
             return Ok(character);
         }
