@@ -15,6 +15,25 @@ namespace Slimer.Infrastructure.Repositories.Sql
             _executor = executor;
         }
 
+        public async Task<TriviaQuestion> GetTriviaQuestionByIdAsync(int triviaQuestionId)
+        {
+            try
+            {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@Id", SqlDbType.Int) { Value = triviaQuestionId, Direction = ParameterDirection.Input },
+                };
+
+                return await _executor.Read(LoadProperties, "GetTriviaQuestionById", parameters);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return default!;
+            }
+        }
+
         public async Task<ICollection<TriviaQuestion>> GetQuestionsAsync()
         {
             try
@@ -40,7 +59,7 @@ namespace Slimer.Infrastructure.Repositories.Sql
                         new SqlParameter("@Question", SqlDbType.VarChar) { Value = triviaQuestion.Question, Direction = ParameterDirection.Input },
                         new SqlParameter("@Answer", SqlDbType.VarChar) { Value = triviaQuestion.Answer, Direction = ParameterDirection.Input },
                         new SqlParameter("@IsEnabled", SqlDbType.Bit) { Value = triviaQuestion.IsEnabled, Direction = ParameterDirection.Input },
-                    };
+                };
 
                 var results = await _executor.Write("UpdateTriviaQuestion", parameters);
 
