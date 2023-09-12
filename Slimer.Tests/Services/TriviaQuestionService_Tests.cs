@@ -1,10 +1,6 @@
 ﻿using Moq;
-using Slimer.Domain.Contracts.GitHub;
 using Slimer.Domain.Models.Trivia;
-using Slimer.Infrastructure.Repositories.Api;
-using Slimer.Infrastructure.Repositories.Sql;
 using Slimer.Infrastructure.Repositories.Sql.Interfaces;
-using Slimer.Infrastructure.Services.Interfaces;
 using Slimer.Services;
 using System;
 using System.Collections.Generic;
@@ -83,7 +79,7 @@ namespace Slimer.Tests.Services
             return mock.Object;
         }
 
-        private static ICollection<TriviaQuestion> CreateQuestionsDictionary()
+        private static List<TriviaQuestion> CreateQuestionsDictionary()
         {
             return new List<TriviaQuestion>
             {
