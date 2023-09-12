@@ -21,7 +21,7 @@ namespace Slimer.Infrastructure.Repositories.Sql
             {
                 var parameters = new List<SqlParameter>
                 {
-                        new SqlParameter("@Id", SqlDbType.Int) { Value = triviaQuestionId, Direction = ParameterDirection.Input },
+                    new SqlParameter("@Id", SqlDbType.Int) { Value = triviaQuestionId, Direction = ParameterDirection.Input },
                 };
 
                 return await _executor.Read(LoadProperties, "GetTriviaQuestionById", parameters);
