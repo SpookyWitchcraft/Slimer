@@ -15,7 +15,7 @@ namespace Slimer.Services
 
         public async Task<GitHubResponse> CreateIssueAsync(GitHubRequest request)
         {
-            return await _repository.CreateIssueAsync(request);
+            return await _repository.PostIssueAsync(request);
         }
     }
 }

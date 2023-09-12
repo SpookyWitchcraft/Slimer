@@ -20,7 +20,7 @@ namespace Slimer.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var q = await _service.GetQuestionAsync();
+            var q = await _service.GetRandomQuestionAsync();
 
             return Ok(q);
         }
@@ -30,13 +30,13 @@ namespace Slimer.Controllers
         {
             var qs = (await _service.GetQuestionsAsync());
 
-            return Ok(qs.Take(100));
+            return Ok(qs.Take(5).Select(x => x.Value).ToList());
         }
 
         [HttpGet("search/{id}")]
         public async Task<IActionResult> Search(int id)
         {
-            var q = (await _service.GetQuestionsAsync()).First(x => x.Id == id);
+            var q = (await _service.GetQuestionsAsync())[id];
 
             return Ok(q);
         }

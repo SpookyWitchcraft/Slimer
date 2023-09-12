@@ -15,11 +15,11 @@ namespace Slimer.Infrastructure.Repositories.Api
 
         public GitHubRepository(IHttpClientProxy client, ISecretsService secretsService)
         {
-            _client = client;
-            _secretsService = secretsService;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _secretsService = secretsService ?? throw new ArgumentNullException(nameof(secretsService));
         }
 
-        public async Task<GitHubResponse> CreateIssueAsync(GitHubRequest request)
+        public async Task<GitHubResponse> PostIssueAsync(GitHubRequest request)
         {
             var httpRequest = CreateRequest(CreateContent(request), "https://api.github.com/repos/SpookyWitchcraft/BabaYaga/issues");
 
