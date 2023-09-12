@@ -8,35 +8,37 @@ namespace Slimer.Services
     {
         private readonly ITriviaQuestionRepository _repository;
 
-        private TriviaQuestion[] _questions;
+        private IReadOnlyDictionary<int, TriviaQuestion> _questions;
 
         public TriviaQuestionService(ITriviaQuestionRepository repository)
         {
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+
+            _questions = new Dictionary<int, TriviaQuestion>();
         }
 
-        public async Task<TriviaQuestion> GetQuestionAsync()
+        public async Task<TriviaQuestion> GetRandomQuestionAsync()
         {
-            if (_questions == null || _questions.Length < 1)
+            if (_questions.Count < 1)
                 await GetQuestionsAsync();
 
             var rand = new Random();
 
-            var next = rand.Next(0, _questions!.Length);
+            var next = rand.Next(0, _questions!.Count);
 
             return _questions[next];
         }
 
-        public async Task<ICollection<TriviaQuestion>> GetQuestionsAsync()
+        public async Task<IReadOnlyDictionary<int, TriviaQuestion>> GetQuestionsAsync()
         {
-            if (_questions != null && _questions.Length > 0)
+            if (_questions != null && _questions.Count > 0)
                 return _questions;
 
             var results = await _repository.GetQuestionsAsync();
 
-            _questions = results.ToArray();
+            _questions = results.ToDictionary(x => x.Id, x => x);
 
-            return results;
+            return _questions;
         }
 
         public async Task<TriviaQuestion> SaveAsync(TriviaQuestion question)
@@ -50,10 +52,10 @@ namespace Slimer.Services
         {
             try
             {
-                if (_questions == null || _questions.Length < 1)
+                if (_questions.Count < 1)
                     return true;
 
-                _questions = Array.Empty<TriviaQuestion>();
+                _questions = new Dictionary<int, TriviaQuestion>();
 
                 return true;
             }

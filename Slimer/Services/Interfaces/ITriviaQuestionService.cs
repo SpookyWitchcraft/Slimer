@@ -4,9 +4,9 @@ namespace Slimer.Services.Interfaces
 {
     public interface ITriviaQuestionService
     {
-        Task<ICollection<TriviaQuestion>> GetQuestionsAsync();
+        Task<IReadOnlyDictionary<int, TriviaQuestion>> GetQuestionsAsync();
 
-        Task<TriviaQuestion> GetQuestionAsync();
+        Task<TriviaQuestion> GetRandomQuestionAsync();
 
         Task<TriviaQuestion> SaveAsync(TriviaQuestion triviaQuestion);
 
