@@ -25,6 +25,14 @@ namespace Slimer.Controllers
             return Ok(q);
         }
 
+        [HttpGet("{triviaQuestionId}")]
+        public async Task<IActionResult> Get(int triviaQuestionId)
+        {
+            var q = await _service.GetQuestionByIdAsync(triviaQuestionId);
+
+            return Ok(q);
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> Search()
         {
