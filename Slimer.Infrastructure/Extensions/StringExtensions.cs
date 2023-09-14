@@ -4,10 +4,12 @@
     {
         public static IList<string> ChunkWords(this string text)
         {
+            var cleaned = text.Replace("\n", "");
+
             var output = new List<string>();
             var temp = "";
 
-            var split = text.Split(' ');
+            var split = cleaned.Split(' ');
 
             for (var i = 0; i < split.Length; i++)
             {
