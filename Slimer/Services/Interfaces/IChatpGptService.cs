@@ -2,6 +2,6 @@
 {
     public interface IChatGptService
     {
-        Task<IEnumerable<string>> AskAnswerAsync(string question);
+        Task<IEnumerable<string>> AskQuestionAsync(string question);
     }
 }

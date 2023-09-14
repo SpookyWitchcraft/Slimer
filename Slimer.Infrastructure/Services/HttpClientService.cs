@@ -48,8 +48,9 @@ namespace Slimer.Infrastructure.Services
                 RequestUri = new Uri(url),
             };
 
-            foreach (var (key, value) in headers)
-                request.Headers.Add(key, value);
+            if(headers != null)
+                foreach (var (key, value) in headers)
+                    request.Headers.Add(key, value);
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

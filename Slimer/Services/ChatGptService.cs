@@ -12,7 +12,7 @@ namespace Slimer.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<string>> AskAnswerAsync(string question)
+        public async Task<IEnumerable<string>> AskQuestionAsync(string question)
         {
             return await _repository.GetAnswerAsync(question);
         }

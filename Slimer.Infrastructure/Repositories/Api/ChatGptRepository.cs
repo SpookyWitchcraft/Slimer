@@ -1,4 +1,5 @@
 ﻿using Slimer.Domain.Contracts.ChatGpt;
+using Slimer.Infrastructure.Extensions;
 using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Infrastructure.Services.Interfaces;
 
@@ -24,7 +25,7 @@ namespace Slimer.Infrastructure.Repositories.Api
             var response = await _client.SendAsync<GptResponse>(request);
 
             if (response?.Choices != null && response.Choices.Count > 0)
-                return response.Choices[0].Message.Content.Chunk(120).Select(x => new string(x));
+                return response.Choices[0].Message.Content.ChunkWords();
 
             return new string[] { "I'm a big dumb AI and couldn't figure this out 🧠" };
         }
