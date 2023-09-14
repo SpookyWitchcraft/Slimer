@@ -17,6 +17,11 @@ namespace Slimer.Services
             _questions = new Dictionary<int, TriviaQuestion>();
         }
 
+        public async Task<TriviaQuestion> GetQuestionByIdAsync(int triviaQuestionId)
+        {
+            return await _repository.GetTriviaQuestionByIdAsync(triviaQuestionId);
+        }
+
         public async Task<TriviaQuestion> GetRandomQuestionAsync()
         {
             if (_questions.Count < 1)
