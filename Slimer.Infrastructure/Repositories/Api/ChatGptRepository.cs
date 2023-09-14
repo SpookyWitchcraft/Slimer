@@ -1,27 +1,25 @@
-﻿using Newtonsoft.Json;
-using Slimer.Domain.Contracts.ChatGpt;
-using Slimer.Infrastructure.Modules.Api.Interfaces;
+﻿using Slimer.Domain.Contracts.ChatGpt;
 using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Infrastructure.Services.Interfaces;
-using System.Net.Http.Headers;
-using System.Text;
 
 namespace Slimer.Infrastructure.Repositories.Api
 {
     public class ChatGptRepository : IChatGptRepository
     {
-        private readonly IHttpClientProxy _client;
+        private readonly IHttpClientService _client;
         private readonly ISecretsService _secretsService;
 
-        public ChatGptRepository(IHttpClientProxy client, ISecretsService secretsService)
+        public ChatGptRepository(IHttpClientService client, ISecretsService secretsService)
         {
-            _client = client;
-            _secretsService = secretsService;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _secretsService = secretsService ?? throw new ArgumentNullException(nameof(secretsService));
         }
 
         public async Task<IEnumerable<string>> GetAnswerAsync(string question)
         {
-            var request = CreateRequest(CreateContent(question), "https://api.openai.com/v1/chat/completions");
+            var payload = CreatePayload(question);
+            var content = _client.CreateStringContent(payload);
+            var request = _client.CreateBearerRequest(content, HttpMethod.Post, _secretsService.GetValue("ChatGPTKey"), "https://api.openai.com/v1/chat/completions");
 
             var response = await _client.SendAsync<GptResponse>(request);
 
@@ -29,15 +27,6 @@ namespace Slimer.Infrastructure.Repositories.Api
                 return response.Choices[0].Message.Content.Chunk(120).Select(x => new string(x));
 
             return new string[] { "I'm a big dumb AI and couldn't figure this out 🧠" };
-        }
-
-        private StringContent CreateContent(string question)
-        {
-            var payload = CreatePayload(question);
-
-            var serialized = JsonConvert.SerializeObject(payload);
-
-            return new StringContent(serialized, Encoding.UTF8, "application/json");
         }
 
         private GptRequest CreatePayload(string question)
@@ -48,20 +37,6 @@ namespace Slimer.Infrastructure.Repositories.Api
                 Model = "gpt-3.5-turbo",
                 Temperature = 0.7
             };
-        }
-
-        private HttpRequestMessage CreateRequest(HttpContent content, string url)
-        {
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                Content = content,
-                RequestUri = new Uri(url),
-            };
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _secretsService.GetValue("ChatGPTKey"));
-
-            return request;
         }
     }
 }

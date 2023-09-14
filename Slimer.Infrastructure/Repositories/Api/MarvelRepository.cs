@@ -1,5 +1,4 @@
 ﻿using Slimer.Domain.Contracts.Marvel;
-using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Infrastructure.Services.Interfaces;
 using System.Security.Cryptography;
@@ -9,12 +8,12 @@ namespace Slimer.Infrastructure.Repositories.Api
 {
     public class MarvelRepository : IMarvelRepository
     {
-        private readonly IHttpClientProxy _client;
+        private readonly IHttpClientService _client;
         private readonly ISecretsService _secretsService;
 
         private string GetUrl(string name, string ts, string key, string hash) => $"https://gateway.marvel.com/v1/public/characters?name={name}&ts={ts}&apikey={key}&hash={hash}";
 
-        public MarvelRepository(IHttpClientProxy client, ISecretsService secretsService)
+        public MarvelRepository(IHttpClientService client, ISecretsService secretsService)
         {
             _client = client;
             _secretsService = secretsService;

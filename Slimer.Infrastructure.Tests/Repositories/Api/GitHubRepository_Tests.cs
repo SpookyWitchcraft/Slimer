@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Slimer.Domain.Contracts.GitHub;
-using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Infrastructure.Repositories.Api;
 using Slimer.Infrastructure.Services.Interfaces;
 using System;
@@ -12,7 +11,7 @@ namespace Slimer.Infrastructure.Tests.Repositories.Api
 {
     public class GitHubRepository_Tests
     {
-        private readonly IHttpClientProxy _clientMock;
+        private readonly IHttpClientService _clientMock;
         private readonly ISecretsService _secretsMock;
 
         public GitHubRepository_Tests()
@@ -43,9 +42,9 @@ namespace Slimer.Infrastructure.Tests.Repositories.Api
             Assert.NotNull(results);
         }
 
-        private static IHttpClientProxy CreateHttpClinetProxyMock()
+        private static IHttpClientService CreateHttpClinetProxyMock()
         {
-            var mock = new Mock<IHttpClientProxy>();
+            var mock = new Mock<IHttpClientService>();
 
             mock.Setup(x => x.SendAsync<GitHubResponse>(It.IsAny<HttpRequestMessage>()))
                 .ReturnsAsync(new GitHubResponse());

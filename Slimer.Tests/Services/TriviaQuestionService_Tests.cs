@@ -32,7 +32,7 @@ namespace Slimer.Tests.Services
             var results = await service.GetRandomQuestionAsync();
 
             Assert.NotNull(results);
-            Assert.Contains(1, new [] { 1, 2, 3 });
+            Assert.Contains(results.Id, new [] { 1, 2, 3 });
             Assert.True(results.IsEnabled);
         }
 
