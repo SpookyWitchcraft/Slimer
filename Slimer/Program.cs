@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Slimer.Infrastructure.Modules.Api;
-using Slimer.Infrastructure.Modules.Api.Interfaces;
 using Slimer.Infrastructure.Modules.Sql;
 using Slimer.Infrastructure.Modules.Sql.Interfaces;
 using Slimer.Infrastructure.Repositories.Api;
@@ -31,7 +29,7 @@ builder.Services.AddSwaggerGen();
 var secrets = new SecretsService();
 
 builder.Services.AddSingleton<ISecretsService>(secrets);
-builder.Services.AddHttpClient<IHttpClientProxy, HttpClientProxy>();
+builder.Services.AddHttpClient<IHttpClientService, HttpClientService>();
 builder.Services.AddTransient<ISqlCommandProvider, SqlCommandProvider>();
 builder.Services.AddTransient<ISqlConnectionProvider, SqlConnectionProvider>();
 builder.Services.AddTransient<ISqlExecutor, SqlExecutor>();
