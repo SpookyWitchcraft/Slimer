@@ -14,7 +14,7 @@ namespace Slimer.Controllers
 
         public TriviaController(ITriviaQuestionService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [HttpGet]

@@ -13,7 +13,7 @@ namespace Slimer.Controllers
 
         public MarvelController(IMarvelService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [HttpGet("{characterName}")]
