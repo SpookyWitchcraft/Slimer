@@ -47,7 +47,7 @@ namespace Slimer.Tests.Services
         }
 
         [Fact]
-        public async Task GetSaveAsync_ShouldReturnSameObject()
+        public async Task SaveAsync_ShouldReturnSameObject()
         {
             var service = new TriviaQuestionService(_repositoryMock);
 

@@ -58,27 +58,5 @@ namespace Slimer.Tests.Controllers
 
             return mock.Object;
         }
-
-        private static ITriviaQuestionService CreateFailureMock()
-        {
-            var mock = new Mock<ITriviaQuestionService>();
-
-            mock.Setup(x => x.GetRandomQuestionAsync())
-                .ThrowsAsync(new Exception());
-
-            mock.Setup(x => x.GetQuestionByIdAsync(It.IsAny<int>()))
-                .ThrowsAsync(new Exception());
-
-            mock.Setup(x => x.GetQuestionsAsync())
-                .ThrowsAsync(new Exception());
-
-            mock.Setup(x => x.SaveAsync(It.IsAny<TriviaQuestion>()))
-                .ThrowsAsync(new Exception());
-
-            mock.Setup(x => x.InvalidateCache())
-                .Throws(new Exception());
-
-            return mock.Object;
-        }
     }
 }
