@@ -43,7 +43,7 @@ namespace Slimer.Tests.Services
 
             var results = await service.GetQuestionsAsync();
 
-            Assert.Equal(3, results.Count);
+            Assert.Equal(4, results.Count);
         }
 
         [Fact]
@@ -83,6 +83,7 @@ namespace Slimer.Tests.Services
         {
             return new List<TriviaQuestion>
             {
+                new TriviaQuestion(0, "a", "aa", "aaa", true, DateTime.Now, DateTime.Now),
                 new TriviaQuestion(1, "a", "aa", "aaa", true, DateTime.Now, DateTime.Now),
                 new TriviaQuestion(2, "b", "bb", "bbb", true, DateTime.Now, DateTime.Now),
                 new TriviaQuestion(3, "c", "cc", "ccc", true, DateTime.Now, DateTime.Now)
