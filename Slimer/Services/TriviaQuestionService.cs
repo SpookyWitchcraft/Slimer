@@ -55,21 +55,12 @@ namespace Slimer.Services
 
         public bool InvalidateCache()
         {
-            try
-            {
-                if (_questions.Count < 1)
-                    return true;
-
-                _questions = new Dictionary<int, TriviaQuestion>();
-
+            if (_questions.Count < 1)
                 return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
 
-                return false;
-            }
+            _questions = new Dictionary<int, TriviaQuestion>();
+
+            return true;
         }
     }
 }
