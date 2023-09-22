@@ -9,7 +9,7 @@ namespace Slimer.Services
 
         public ChatGptService(IChatGptRepository repository)
         {
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public async Task<IEnumerable<string>> AskQuestionAsync(string question)
