@@ -14,7 +14,7 @@ namespace Slimer.Controllers
 
         public TriviaController(ITriviaQuestionService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [HttpGet]
@@ -28,6 +28,9 @@ namespace Slimer.Controllers
         [HttpGet("{triviaQuestionId}")]
         public async Task<IActionResult> Get(int triviaQuestionId)
         {
+            if (triviaQuestionId < 1)
+                throw new BadHttpRequestException("Trivia question must be greater than 0");
+
             var q = await _service.GetQuestionByIdAsync(triviaQuestionId);
 
             return Ok(q);

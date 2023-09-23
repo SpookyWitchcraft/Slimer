@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Slimer.Infrastructure.Services.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text;
 
 namespace Slimer.Infrastructure.Services
 {
+    [ExcludeFromCodeCoverage]
     public class HttpClientService : IHttpClientService
     {
         private readonly HttpClient _httpClient;

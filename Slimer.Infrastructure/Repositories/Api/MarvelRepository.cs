@@ -15,8 +15,8 @@ namespace Slimer.Infrastructure.Repositories.Api
 
         public MarvelRepository(IHttpClientService client, ISecretsService secretsService)
         {
-            _client = client;
-            _secretsService = secretsService;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _secretsService = secretsService ?? throw new ArgumentNullException(nameof(secretsService));
         }
 
         public async Task<MarvelDataResults> GetCharacterDetailsAsync(string name)

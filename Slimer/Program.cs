@@ -8,6 +8,7 @@ using Slimer.Infrastructure.Repositories.Sql;
 using Slimer.Infrastructure.Repositories.Sql.Interfaces;
 using Slimer.Infrastructure.Services;
 using Slimer.Infrastructure.Services.Interfaces;
+using Slimer.Middlewares;
 using Slimer.Services;
 using Slimer.Services.Interfaces;
 
@@ -65,6 +66,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("calavera");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<FaultMiddleware>();
 
 app.MapControllers();
 

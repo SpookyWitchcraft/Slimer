@@ -13,7 +13,7 @@ namespace Slimer.Controllers
 
         public ChatGptController(IChatGptService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [HttpGet("{question}")]

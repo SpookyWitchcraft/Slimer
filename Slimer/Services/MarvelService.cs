@@ -10,7 +10,7 @@ namespace Slimer.Services
 
         public MarvelService(IMarvelRepository repository)
         {
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public async Task<MarvelDataResults> SearchForCharacterDetailsAsync(string name)
