@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Slimer.Domain.Contracts.GitHub
 {
+    [ExcludeFromCodeCoverage]
     public class GitHubRequest
     {
         [JsonProperty("title")]

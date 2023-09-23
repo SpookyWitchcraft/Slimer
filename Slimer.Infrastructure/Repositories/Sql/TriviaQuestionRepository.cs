@@ -12,7 +12,7 @@ namespace Slimer.Infrastructure.Repositories.Sql
 
         public TriviaQuestionRepository(ISqlExecutor executor)
         {
-            _executor = executor;
+            _executor = executor ?? throw new ArgumentNullException(nameof(executor));
         }
 
         public async Task<TriviaQuestion> GetTriviaQuestionByIdAsync(int triviaQuestionId)

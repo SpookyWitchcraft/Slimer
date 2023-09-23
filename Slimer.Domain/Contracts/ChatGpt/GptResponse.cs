@@ -1,13 +1,16 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Slimer.Domain.Contracts.ChatGpt
 {
+    [ExcludeFromCodeCoverage]
     public class GptResponse
     {
         [JsonProperty("choices")]
         public List<GptChoice> Choices { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class GptChoice
     {
         [JsonProperty("index")]
@@ -20,6 +23,7 @@ namespace Slimer.Domain.Contracts.ChatGpt
         public string FinishReason { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class GptResponseMessage
     {
         [JsonProperty("content")]
