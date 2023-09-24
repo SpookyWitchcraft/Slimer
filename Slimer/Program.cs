@@ -1,5 +1,7 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Slimer.Domain.Contracts.GitHub;
 using Slimer.Infrastructure.Modules.Sql;
 using Slimer.Infrastructure.Modules.Sql.Interfaces;
 using Slimer.Infrastructure.Repositories.Api;
@@ -11,6 +13,7 @@ using Slimer.Infrastructure.Services.Interfaces;
 using Slimer.Middlewares;
 using Slimer.Services;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +45,9 @@ builder.Services.AddSingleton<ITriviaQuestionService, TriviaQuestionService>();
 builder.Services.AddSingleton<IGitHubService, GitHubService>();
 builder.Services.AddSingleton<IMarvelService, MarvelService>();
 builder.Services.AddSingleton<IChatGptService, ChatGptService>();
+
+//validators
+builder.Services.AddScoped<IValidator<GitHubRequest>, GitHubRequestValidator>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

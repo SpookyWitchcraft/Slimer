@@ -3,6 +3,7 @@ using Moq;
 using Slimer.Controllers;
 using Slimer.Domain.Contracts.GitHub;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
 using Xunit;
 
@@ -20,15 +21,28 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public void GitHubController_MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new GitHubController(null!));
+            Assert.Throws<ArgumentNullException>(() => new GitHubController(new GitHubRequestValidator(), null!));
+        }
+
+        [Fact]
+        public void GitHubController_MissingValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new GitHubController(null!, _serviceMock));
         }
 
         [Fact]
         public async void GitHubController_PostShouldReturnObjectAnd200()
         {
-            var controller = new GitHubController(_serviceMock);
+            var controller = new GitHubController(new GitHubRequestValidator(), _serviceMock);
 
-            var results = await controller.Post(new GitHubRequest()) as OkObjectResult;
+            var request = new GitHubRequest
+            {
+                Body = "body",
+                Labels = new string[] { "bug" },
+                Title = "title"
+            };
+
+            var results = await controller.Post(request) as OkObjectResult;
 
             var response = results?.Value as GitHubResponse;
 
