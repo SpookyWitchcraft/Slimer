@@ -3,6 +3,7 @@ using Moq;
 using Slimer.Controllers;
 using Slimer.Domain.Contracts.Marvel;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
 using Xunit;
 
@@ -20,13 +21,19 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public void MarvelController_MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new MarvelController(null!));
+            Assert.Throws<ArgumentNullException>(() => new MarvelController(new QueryParameterValidator(), null!));
+        }
+
+        [Fact]
+        public void MarvelController_MissingValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MarvelController(null!, _serviceMock));
         }
 
         [Fact]
         public async void MarvelController_PostShouldReturnObjectAnd200()
         {
-            var controller = new MarvelController(_serviceMock);
+            var controller = new MarvelController(new QueryParameterValidator(), _serviceMock);
 
             var results = await controller.Get("Juggernaut") as OkObjectResult;
 

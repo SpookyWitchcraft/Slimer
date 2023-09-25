@@ -4,6 +4,7 @@ using Moq;
 using Slimer.Controllers;
 using Slimer.Domain.Models.Trivia;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,22 +15,38 @@ namespace Slimer.Tests.Controllers
     public class TriviaController_Tests
     {
         private readonly ITriviaQuestionService _serviceMock;
+        private readonly IdParameterValidator _idValidator;
+        private readonly TriviaQuestionValidator _questionValidator;
 
         public TriviaController_Tests()
         {
             _serviceMock = CreateServiceMock();
+            _idValidator = new IdParameterValidator();
+            _questionValidator = new TriviaQuestionValidator();
         }
 
         [Fact]
         public void TriviaController_MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new TriviaController(null!));
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(_questionValidator, _idValidator, null!));
+        }
+
+        [Fact]
+        public void TriviaController_MissingIdValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(_questionValidator, null!, _serviceMock));
+        }
+
+        [Fact]
+        public void TriviaController_MissingQuestionValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(null!, _idValidator, _serviceMock));
         }
 
         [Fact]
         public async Task TriviaController_GetShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Get() as OkObjectResult;
 
@@ -50,7 +67,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_GetWithIdShouldThrowBadRequest()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(0));
         }
@@ -58,7 +75,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_GetWithIdShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Get(1) as OkObjectResult;
 
@@ -79,7 +96,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_SearchShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Search() as OkObjectResult;
 
@@ -100,7 +117,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_SearchWithIdShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Search(1) as OkObjectResult;
 
@@ -121,7 +138,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_PostShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var question = CreateTriviaQuestion(1);
 
@@ -144,7 +161,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public void TriviaController_InvalidateCacheShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = controller.Invalidate() as OkObjectResult;
 

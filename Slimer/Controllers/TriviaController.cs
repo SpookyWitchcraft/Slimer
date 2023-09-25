@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Slimer.Domain.Models.Trivia;
 using Slimer.Services.Interfaces;
@@ -10,10 +11,14 @@ namespace Slimer.Controllers
     [ApiController]
     public class TriviaController : ControllerBase
     {
+        private readonly IValidator<TriviaQuestion> _questionValidator;
+        private readonly IValidator<int> _idValidator;
         private readonly ITriviaQuestionService _service;
 
-        public TriviaController(ITriviaQuestionService service)
+        public TriviaController(IValidator<TriviaQuestion> questionValidator, IValidator<int> idValidator, ITriviaQuestionService service)
         {
+            _questionValidator = questionValidator ?? throw new ArgumentNullException(nameof(questionValidator));
+            _idValidator = idValidator ?? throw new ArgumentNullException(nameof(idValidator));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -28,8 +33,10 @@ namespace Slimer.Controllers
         [HttpGet("{triviaQuestionId}")]
         public async Task<IActionResult> Get(int triviaQuestionId)
         {
-            if (triviaQuestionId < 1)
-                throw new BadHttpRequestException("Trivia question must be greater than 0");
+            var validation = await _idValidator.ValidateAsync(triviaQuestionId);
+
+            if (!validation.IsValid)
+                throw new BadHttpRequestException(validation.ToString());
 
             var q = await _service.GetQuestionByIdAsync(triviaQuestionId);
 
@@ -47,6 +54,11 @@ namespace Slimer.Controllers
         [HttpGet("search/{id}")]
         public async Task<IActionResult> Search(int id)
         {
+            var validation = await _idValidator.ValidateAsync(id);
+
+            if (!validation.IsValid)
+                throw new BadHttpRequestException(validation.ToString());
+
             var q = (await _service.GetQuestionsAsync())[id];
 
             return Ok(q);
@@ -55,6 +67,11 @@ namespace Slimer.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Post(TriviaQuestion question)
         {
+            var validation = await _questionValidator.ValidateAsync(question);
+
+            if (!validation.IsValid)
+                throw new BadHttpRequestException(validation.ToString());
+
             var results = await _service.SaveAsync(question);
 
             return Ok(results);

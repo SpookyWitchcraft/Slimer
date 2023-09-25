@@ -11,7 +11,7 @@ namespace Slimer.Controllers
     [ApiController]
     public class GitHubController : ControllerBase
     {
-        private IValidator<GitHubRequest> _validator;
+        private readonly IValidator<GitHubRequest> _validator;
         private readonly IGitHubService _service;
 
         public GitHubController(IValidator<GitHubRequest> validator, IGitHubService service)

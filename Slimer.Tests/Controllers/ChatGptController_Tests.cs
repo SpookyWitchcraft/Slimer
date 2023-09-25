@@ -2,6 +2,7 @@
 using Moq;
 using Slimer.Controllers;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
 using Xunit;
 
@@ -19,13 +20,19 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public void ChatGptController_MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new ChatGptController(null!));
+            Assert.Throws<ArgumentNullException>(() => new ChatGptController(new QueryParameterValidator(), null!));
+        }
+
+        [Fact]
+        public void ChatGptController_MissingValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ChatGptController(null!, _serviceMock));
         }
 
         [Fact]
         public async void ChatGptController_PostShouldReturnObjectAnd200()
         {
-            var controller = new ChatGptController(_serviceMock);
+            var controller = new ChatGptController(new QueryParameterValidator(), _serviceMock);
 
             var results = await controller.Get("This is my question") as OkObjectResult;
 
