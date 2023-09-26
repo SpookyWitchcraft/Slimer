@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Slimer.Controllers;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Slimer.Tests.Controllers
@@ -17,15 +20,45 @@ namespace Slimer.Tests.Controllers
         }
 
         [Fact]
-        public void ChatGptController_MissingServiceShouldThrow()
+        public void MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new ChatGptController(null!));
+            Assert.Throws<ArgumentNullException>(() => new ChatGptController(new QueryParameterValidator(), null!));
         }
 
         [Fact]
-        public async void ChatGptController_PostShouldReturnObjectAnd200()
+        public void MissingValidatorShouldThrow()
         {
-            var controller = new ChatGptController(_serviceMock);
+            Assert.Throws<ArgumentNullException>(() => new ChatGptController(null!, _serviceMock));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForNull()
+        {
+            var controller = new ChatGptController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => controller.Get(default!));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForEmpty()
+        {
+            var controller = new ChatGptController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(string.Empty!));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForLength()
+        {
+            var controller = new ChatGptController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(new string('#', 256)));
+        }
+
+        [Fact]
+        public async Task Get_ShouldReturnObjectAnd200()
+        {
+            var controller = new ChatGptController(new QueryParameterValidator(), _serviceMock);
 
             var results = await controller.Get("This is my question") as OkObjectResult;
 
