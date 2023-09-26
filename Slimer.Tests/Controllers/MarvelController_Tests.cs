@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Slimer.Controllers;
 using Slimer.Domain.Contracts.Marvel;
 using Slimer.Services.Interfaces;
 using Slimer.Validators;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Slimer.Tests.Controllers
@@ -19,19 +21,43 @@ namespace Slimer.Tests.Controllers
         }
 
         [Fact]
-        public void MarvelController_MissingServiceShouldThrow()
+        public void MissingServiceShouldThrow()
         {
             Assert.Throws<ArgumentNullException>(() => new MarvelController(new QueryParameterValidator(), null!));
         }
 
         [Fact]
-        public void MarvelController_MissingValidatorShouldThrow()
+        public void MissingValidatorShouldThrow()
         {
             Assert.Throws<ArgumentNullException>(() => new MarvelController(null!, _serviceMock));
         }
 
         [Fact]
-        public async void MarvelController_PostShouldReturnObjectAnd200()
+        public async Task Get_ShouldThrow_ForNull()
+        {
+            var controller = new MarvelController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => controller.Get(default!));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForEmpty()
+        {
+            var controller = new MarvelController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(string.Empty!));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForLength()
+        {
+            var controller = new MarvelController(new QueryParameterValidator(), _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(new string('#', 256)));
+        }
+
+        [Fact]
+        public async void Post_ShouldReturnObjectAnd200()
         {
             var controller = new MarvelController(new QueryParameterValidator(), _serviceMock);
 

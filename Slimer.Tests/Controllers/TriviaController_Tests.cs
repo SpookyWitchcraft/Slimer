@@ -44,6 +44,150 @@ namespace Slimer.Tests.Controllers
         }
 
         [Fact]
+        public async Task Get_ShouldThrow_ForBadId()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(0));
+        }
+
+        [Fact]
+        public async Task Search_ShouldThrow_ForBadId()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Search(0));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = new string('#', 5001);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = new string('#', 5001);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = new string('#', 256);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CreatedDateShouldThrow_ForDefault()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = new TriviaQuestion(1, "what?", "that", "general", true, default, DateTime.Now);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_UpdatedDateShouldThrow_ForDefault()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = new TriviaQuestion(1, "what?", "that", "general", true, DateTime.Now, default);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
         public async Task TriviaController_GetShouldReturn200()
         {
             var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
