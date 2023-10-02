@@ -41,13 +41,13 @@ namespace Slimer.Controllers
         {
             var qs = (await _service.GetQuestionsAsync());
 
-            return Ok(qs.Take(5).Select(x => x.Value).ToList());
+            return Ok(qs.Take(5).Select(x => x).ToList());
         }
 
         [HttpGet("search/{id}")]
         public async Task<IActionResult> Search(int id)
         {
-            var q = (await _service.GetQuestionsAsync())[id];
+            var q = (await _service.GetQuestionsAsync()).First(x => x.Id == id);
 
             return Ok(q);
         }

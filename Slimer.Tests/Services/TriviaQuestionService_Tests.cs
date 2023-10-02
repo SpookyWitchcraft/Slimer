@@ -60,7 +60,7 @@ namespace Slimer.Tests.Services
 
             var results = await service.GetQuestionsAsync();
 
-            Assert.Equal(4, results.Count);
+            Assert.Equal(4, results.Length);
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace Slimer.Tests.Services
             //cached version of the first results
             var cached = await service.GetQuestionsAsync();
 
-            Assert.Equal(4, cached.Count);
+            Assert.Equal(4, cached.Length);
         }
 
         [Fact]

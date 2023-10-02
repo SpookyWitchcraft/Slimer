@@ -167,13 +167,13 @@ namespace Slimer.Tests.Controllers
                 .ReturnsAsync(CreateTriviaQuestion(1));
 
             mock.Setup(x => x.GetQuestionsAsync())
-                .ReturnsAsync(new Dictionary<int, TriviaQuestion>
+                .ReturnsAsync(new TriviaQuestion[]
                 {
-                    { 1, CreateTriviaQuestion(1) },
-                    { 2, CreateTriviaQuestion(2) },
-                    { 3, CreateTriviaQuestion(3) },
-                    { 4, CreateTriviaQuestion(4) },
-                    { 5, CreateTriviaQuestion(5) }
+                    CreateTriviaQuestion(1),
+                    CreateTriviaQuestion(2),
+                    CreateTriviaQuestion(3),
+                    CreateTriviaQuestion(4),
+                    CreateTriviaQuestion(5)
                 });
 
             mock.Setup(x => x.SaveAsync(It.IsAny<TriviaQuestion>()))
