@@ -4,6 +4,7 @@ using Moq;
 using Slimer.Controllers;
 using Slimer.Domain.Models.Trivia;
 using Slimer.Services.Interfaces;
+using Slimer.Validators;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,22 +15,182 @@ namespace Slimer.Tests.Controllers
     public class TriviaController_Tests
     {
         private readonly ITriviaQuestionService _serviceMock;
+        private readonly IdParameterValidator _idValidator;
+        private readonly TriviaQuestionValidator _questionValidator;
 
         public TriviaController_Tests()
         {
             _serviceMock = CreateServiceMock();
+            _idValidator = new IdParameterValidator();
+            _questionValidator = new TriviaQuestionValidator();
         }
 
         [Fact]
         public void TriviaController_MissingServiceShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => new TriviaController(null!));
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(_questionValidator, _idValidator, null!));
+        }
+
+        [Fact]
+        public void TriviaController_MissingIdValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(_questionValidator, null!, _serviceMock));
+        }
+
+        [Fact]
+        public void TriviaController_MissingQuestionValidatorShouldThrow()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TriviaController(null!, _idValidator, _serviceMock));
+        }
+
+        [Fact]
+        public async Task Get_ShouldThrow_ForBadId()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(0));
+        }
+
+        [Fact]
+        public async Task Search_ShouldThrow_ForBadId()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Search(0));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_AnswerShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Answer = new string('#', 5001);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_QuestionShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Question = new string('#', 5001);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForNull()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = null!;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForEmpty()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = string.Empty;
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CategoryShouldThrow_ForLength()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = CreateTriviaQuestion(1);
+
+            request.Category = new string('#', 256);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_CreatedDateShouldThrow_ForDefault()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = new TriviaQuestion(1, "what?", "that", "general", true, default, DateTime.Now);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
+        }
+
+        [Fact]
+        public async Task Get_UpdatedDateShouldThrow_ForDefault()
+        {
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
+
+            var request = new TriviaQuestion(1, "what?", "that", "general", true, DateTime.Now, default);
+
+            await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Post(request));
         }
 
         [Fact]
         public async Task TriviaController_GetShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Get() as OkObjectResult;
 
@@ -50,7 +211,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_GetWithIdShouldThrowBadRequest()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             await Assert.ThrowsAsync<BadHttpRequestException>(() => controller.Get(0));
         }
@@ -58,7 +219,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_GetWithIdShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Get(1) as OkObjectResult;
 
@@ -79,7 +240,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_SearchShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Search() as OkObjectResult;
 
@@ -100,7 +261,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_SearchWithIdShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = await controller.Search(1) as OkObjectResult;
 
@@ -121,7 +282,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public async Task TriviaController_PostShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var question = CreateTriviaQuestion(1);
 
@@ -144,7 +305,7 @@ namespace Slimer.Tests.Controllers
         [Fact]
         public void TriviaController_InvalidateCacheShouldReturn200()
         {
-            var controller = new TriviaController(_serviceMock);
+            var controller = new TriviaController(_questionValidator, _idValidator, _serviceMock);
 
             var results = controller.Invalidate() as OkObjectResult;
 
