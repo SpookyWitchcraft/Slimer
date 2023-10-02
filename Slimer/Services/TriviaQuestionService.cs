@@ -8,13 +8,11 @@ namespace Slimer.Services
     {
         private readonly ITriviaQuestionRepository _repository;
 
-        private IReadOnlyDictionary<int, TriviaQuestion> _questions;
+        private TriviaQuestion[] _questions = default!;
 
         public TriviaQuestionService(ITriviaQuestionRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-
-            _questions = new Dictionary<int, TriviaQuestion>();
         }
 
         public async Task<TriviaQuestion> GetQuestionByIdAsync(int triviaQuestionId)
@@ -24,24 +22,24 @@ namespace Slimer.Services
 
         public async Task<TriviaQuestion> GetRandomQuestionAsync()
         {
-            if (_questions.Count < 1)
+            if (_questions == default || _questions.Length < 1)
                 await GetQuestionsAsync();
 
             var rand = new Random();
 
-            var next = rand.Next(0, _questions!.Count);
+            var next = rand.Next(0, _questions.Length);
 
             return _questions[next];
         }
 
-        public async Task<IReadOnlyDictionary<int, TriviaQuestion>> GetQuestionsAsync()
+        public async Task<TriviaQuestion[]> GetQuestionsAsync()
         {
-            if (_questions != null && _questions.Count > 0)
+            if (_questions?.Length > 0)
                 return _questions;
 
             var results = await _repository.GetQuestionsAsync();
 
-            _questions = results.ToDictionary(x => x.Id, x => x);
+            _questions = results.ToArray();
 
             return _questions;
         }
@@ -55,10 +53,10 @@ namespace Slimer.Services
 
         public bool InvalidateCache()
         {
-            if (_questions.Count < 1)
+            if (_questions == default || _questions.Length < 1)
                 return true;
 
-            _questions = new Dictionary<int, TriviaQuestion>();
+            _questions = default!;
 
             return true;
         }
