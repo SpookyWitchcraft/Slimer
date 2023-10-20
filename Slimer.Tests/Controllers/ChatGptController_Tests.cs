@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Slimer.Controllers;
+using Slimer.Domain.Contracts.ChatGpt;
 using Slimer.Services.Interfaces;
 using Slimer.Validators;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -62,19 +64,20 @@ namespace Slimer.Tests.Controllers
 
             var results = await controller.Get("This is my question") as OkObjectResult;
 
-            var response = results?.Value as string[];
+            var response = results?.Value as GptTextResponse;
 
             Assert.NotNull(results);
             Assert.NotNull(response);
             Assert.True(results?.StatusCode == 200);
-            Assert.True(response?.Length == 3);
+            Assert.True(response?.Lines.Count() == 3);
         }
 
         private static IChatGptService CreateServiceMock()
         {
             var mock = new Mock<IChatGptService>();
 
-            mock.Setup(x => x.AskQuestionAsync(It.IsAny<string>())).ReturnsAsync(new[] { "Hello", "I am", "a response." });
+            mock.Setup(x => x.AskQuestionAsync(It.IsAny<string>()))
+                .ReturnsAsync(new GptTextResponse { Lines = new[] { "Hello", "I am", "a response." } });
 
             return mock.Object;
         }
