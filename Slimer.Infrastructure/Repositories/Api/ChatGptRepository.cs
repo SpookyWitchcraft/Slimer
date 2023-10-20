@@ -16,7 +16,7 @@ namespace Slimer.Infrastructure.Repositories.Api
             _secretsService = secretsService ?? throw new ArgumentNullException(nameof(secretsService));
         }
 
-        public async Task<IEnumerable<string>> GetAnswerAsync(string question)
+        public async Task<GptTextResponse> GetAnswerAsync(string question)
         {
             var payload = CreatePayload(question);
             var content = _client.CreateStringContent(payload);
@@ -25,9 +25,9 @@ namespace Slimer.Infrastructure.Repositories.Api
             var response = await _client.SendAsync<GptResponse>(request);
 
             if (response?.Choices != null && response.Choices.Count > 0)
-                return response.Choices[0].Message.Content.ChunkWords();
+                return new GptTextResponse { Lines = response.Choices[0].Message.Content.ChunkWords() };
 
-            return new string[] { "I'm a big dumb AI and couldn't figure this out 🧠" };
+            return new GptTextResponse { Lines = new[] { "I'm a big dumb AI and couldn't figure this out 🧠" } };
         }
 
         private GptRequest CreatePayload(string question)

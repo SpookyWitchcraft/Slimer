@@ -1,4 +1,5 @@
-﻿using Slimer.Infrastructure.Repositories.Api.Interfaces;
+﻿using Slimer.Domain.Contracts.ChatGpt;
+using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Services.Interfaces;
 
 namespace Slimer.Services
@@ -12,7 +13,7 @@ namespace Slimer.Services
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task<IEnumerable<string>> AskQuestionAsync(string question)
+        public async Task<GptTextResponse> AskQuestionAsync(string question)
         {
             return await _repository.GetAnswerAsync(question);
         }

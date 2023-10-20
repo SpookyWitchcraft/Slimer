@@ -1,8 +1,8 @@
 ﻿using Moq;
+using Slimer.Domain.Contracts.ChatGpt;
 using Slimer.Infrastructure.Repositories.Api.Interfaces;
 using Slimer.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -29,7 +29,7 @@ namespace Slimer.Tests.Services
         {
             var service = new ChatGptService(_repositoryMock);
 
-            var results = (await service.AskQuestionAsync("what time is it?")).ToList();
+            var results = (await service.AskQuestionAsync("what time is it?")).Lines.ToList();
 
             Assert.NotNull(results);
             Assert.True(results.Count == 1);
@@ -46,6 +46,6 @@ namespace Slimer.Tests.Services
             return mock.Object;
         }
 
-        private static readonly IEnumerable<string> _chatFake = new List<string> { "10pm" };
+        private static readonly GptTextResponse _chatFake = new GptTextResponse { Lines = new[] { "10pm" } };
     }
 }

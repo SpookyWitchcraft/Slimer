@@ -1,7 +1,9 @@
-﻿namespace Slimer.Services.Interfaces
+﻿using Slimer.Domain.Contracts.ChatGpt;
+
+namespace Slimer.Services.Interfaces
 {
     public interface IChatGptService
     {
-        Task<IEnumerable<string>> AskQuestionAsync(string question);
+        Task<GptTextResponse> AskQuestionAsync(string question);
     }
 }
