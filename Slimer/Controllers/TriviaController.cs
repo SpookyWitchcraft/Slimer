@@ -46,6 +46,8 @@ namespace Slimer.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> Search()
         {
+            Console.WriteLine("Entering Search...");
+
             var qs = (await _service.GetQuestionsAsync());
 
             return Ok(qs.Length);
