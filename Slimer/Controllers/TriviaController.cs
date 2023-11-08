@@ -50,9 +50,9 @@ namespace Slimer.Controllers
 
             var qs = (await _service.GetQuestionsAsync());
 
-            return Ok(qs.Length);
+            return Ok(qs.Take(5).Select(x => x).ToList());
         }
-
+        
         [HttpGet("search/{id}")]
         public async Task<IActionResult> Search(int id)
         {
