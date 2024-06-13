@@ -35,11 +35,7 @@ var secretOptions = new SecretClientOptions()
     }
 };
 
-Console.WriteLine("test");
-
-var client = new SecretClient(new Uri(Environment.GetEnvironmentVariable("E_VAULT_URL")), new DefaultAzureCredential(), secretOptions);
-
-Console.WriteLine("test2");
+var client = new SecretClient(new Uri("https://spookywitchcraft-vault.vault.azure.net/"), new DefaultAzureCredential(), secretOptions);
 
 Task<Azure.Response<KeyVaultSecret>>[] secretTasks =
     [
@@ -47,8 +43,6 @@ Task<Azure.Response<KeyVaultSecret>>[] secretTasks =
         client.GetSecretAsync("Auth0Domain"),
         client.GetSecretAsync("Auth0Audience")
     ];
-
-Console.WriteLine("test3");
 
 var connectionString = ((KeyVaultSecret)(await secretTasks[0])).Value;
 
