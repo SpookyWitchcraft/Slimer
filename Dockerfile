@@ -20,4 +20,8 @@ RUN dotnet publish "Slimer/Slimer.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+ARG VAULT_URL
+ARG ISSUES_URL
+ENV E_VAULT_URL=${VAULT_URL}
+ENV E_ISSUES_URL=${ISSUES_URL}
 ENTRYPOINT ["dotnet", "Slimer.dll"]
