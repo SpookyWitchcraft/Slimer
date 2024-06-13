@@ -35,7 +35,7 @@ var secretOptions = new SecretClientOptions()
     }
 };
 
-var client = new SecretClient(new Uri(Environment.GetEnvironmentVariable("E_VAULT_URL")), new DefaultAzureCredential(), secretOptions);
+var client = new SecretClient(new Uri("https://spookywitchcraft-vault.vault.azure.net/"), new DefaultAzureCredential(), secretOptions);
 
 Task<Azure.Response<KeyVaultSecret>>[] secretTasks =
     [
@@ -80,7 +80,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorizationBuilder()
     .AddFallbackPolicy("read-write", p => p.
             RequireAuthenticatedUser().
-            RequireClaim("scope", "read-write"));
+            RequireClaim("permissions", "read-write"));
 
 var app = builder.Build();
 
