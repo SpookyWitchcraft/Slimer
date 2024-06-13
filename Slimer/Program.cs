@@ -1,20 +1,18 @@
+using Azure.Core;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Slimer.Domain.Contracts.GitHub;
-using Slimer.Domain.Models.Trivia;
-using Slimer.Infrastructure.Modules.Sql;
-using Slimer.Infrastructure.Modules.Sql.Interfaces;
-using Slimer.Infrastructure.Repositories.Api;
-using Slimer.Infrastructure.Repositories.Api.Interfaces;
-using Slimer.Infrastructure.Repositories.Sql;
-using Slimer.Infrastructure.Repositories.Sql.Interfaces;
-using Slimer.Infrastructure.Services;
-using Slimer.Infrastructure.Services.Interfaces;
+using Slimer.Common;
+using Slimer.Common.Interfaces;
+using Slimer.Extensions;
+using Slimer.Features.ChatGpt;
+using Slimer.Features.GitHub;
+using Slimer.Features.Marvel;
+using Slimer.Features.TriviaQuestions;
 using Slimer.Middlewares;
-using Slimer.Services;
-using Slimer.Services.Interfaces;
-using Slimer.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,38 +24,52 @@ builder.Services.AddCors(options => options.AddPolicy("calavera", policy =>
         .WithOrigins("*");
 }));
 
-builder.Services.AddControllers();
+var secretOptions = new SecretClientOptions()
+{
+    Retry =
+    {
+        Delay= TimeSpan.FromSeconds(2),
+        MaxDelay = TimeSpan.FromSeconds(16),
+        MaxRetries = 5,
+        Mode = RetryMode.Exponential
+    }
+};
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var client = new SecretClient(new Uri(Environment.GetEnvironmentVariable("E_VAULT_URL")), new DefaultAzureCredential(), secretOptions);
 
-var secrets = new SecretsService();
+Task<Azure.Response<KeyVaultSecret>>[] secretTasks =
+    [
+        client.GetSecretAsync("SQLConnectionString"),
+        client.GetSecretAsync("Auth0Domain"),
+        client.GetSecretAsync("Auth0Audience")
+    ];
 
-builder.Services.AddSingleton<ISecretsService>(secrets);
+var connectionString = ((KeyVaultSecret)(await secretTasks[0])).Value;
+
+builder.Services.AddMemoryCache();
+
+builder.Services.AddSingleton(client);
+builder.Services.AddSingleton<ISecretsService, SecretsService>();
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
 builder.Services.AddHttpClient<IHttpClientService, HttpClientService>();
-builder.Services.AddTransient<ISqlCommandProvider, SqlCommandProvider>();
-builder.Services.AddTransient<ISqlConnectionProvider, SqlConnectionProvider>();
-builder.Services.AddTransient<ISqlExecutor, SqlExecutor>();
-builder.Services.AddTransient<ITriviaQuestionRepository, TriviaQuestionRepository>();
-builder.Services.AddTransient<IGitHubRepository, GitHubRepository>();
-builder.Services.AddTransient<IMarvelRepository, MarvelRepository>();
-builder.Services.AddTransient<IChatGptRepository, ChatGptRepository>();
-builder.Services.AddSingleton<ITriviaQuestionService, TriviaQuestionService>();
-builder.Services.AddSingleton<IGitHubService, GitHubService>();
-builder.Services.AddSingleton<IMarvelService, MarvelService>();
-builder.Services.AddSingleton<IChatGptService, ChatGptService>();
+builder.Services.AddScoped<TriviaQuestionCache>();
+builder.Services.AddScoped<IValidator<GetTriviaQuestionById.Request>, GetTriviaQuestionById.Validator>();
+builder.Services.AddScoped<IValidator<SearchTriviaQuestionsById.Request>, SearchTriviaQuestionsById.Validator>();
+builder.Services.AddScoped<IValidator<UpdateTriviaQuestion.Request>, UpdateTriviaQuestion.Validator>();
+builder.Services.AddScoped<IValidator<GetCharacterDetails.Request>, GetCharacterDetails.Validator>();
+builder.Services.AddScoped<IValidator<GetQuestionAnswered.Request>, GetQuestionAnswered.Validator>();
+builder.Services.AddScoped<IValidator<CreateGitHubIssue.Request>, CreateGitHubIssue.Validator>();
 
-//validators
-builder.Services.AddScoped<IValidator<GitHubRequest>, GitHubRequestValidator>();
-builder.Services.AddScoped<IValidator<string>, QueryParameterValidator>();
-builder.Services.AddScoped<IValidator<int>, IdParameterValidator>();
-builder.Services.AddScoped<IValidator<TriviaQuestion>, TriviaQuestionValidator>();
+builder.Services.AddEndpoints(typeof(Program).Assembly);
+
+var domain = ((KeyVaultSecret)(await secretTasks[1])).Value;
+var audience = ((KeyVaultSecret)(await secretTasks[2])).Value;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = secrets.GetValue("Auth0Domain");
-        options.Audience = secrets.GetValue("Auth0Audience");
+        options.Authority = domain;
+        options.Audience = audience;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
@@ -65,13 +77,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var app = builder.Build();
+builder.Services.AddAuthorizationBuilder()
+    .AddFallbackPolicy("read-write", p => p.
+            RequireAuthenticatedUser().
+            RequireClaim("scope", "read-write"));
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+var app = builder.Build();
 
 app.UseCors("calavera");
 app.UseAuthentication();
@@ -79,6 +90,6 @@ app.UseAuthorization();
 
 app.UseMiddleware<FaultMiddleware>();
 
-app.MapControllers();
+app.MapEndpoints();
 
 app.Run();

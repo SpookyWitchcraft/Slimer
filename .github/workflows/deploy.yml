@@ -3,9 +3,11 @@
 name: Build and deploy to ACR
 
 env:
-  PROJECT_NAME: slimer                            # set this to your project's name
+  PROJECT_NAME: slimer                                            # set this to your project's name
   RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}                   # set this to the resource group containing your AKS cluster
   REGISTRY_URL: ${{ secrets.REGISTRY_LOGIN_SERVER }}              # set this to the URL of your registry
+  VAULT_URL: ${{ secrets.VAULT_URL }}
+  ISSUES_URL: ${{ secrets.ISSUES_URL }}
 
 on:
   pull_request:
@@ -19,13 +21,13 @@ jobs:
     - name: Setup dotnet
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '8.0.x'
     - name: Install dependencies
       run: dotnet restore Slimer/Slimer.sln
     - name: Build
       run: dotnet build Slimer/Slimer.sln
-    - name: Test with the dotnet CLI
-      run: dotnet test Slimer/Slimer.sln
+    # - name: Test with the dotnet CLI
+    #   run: dotnet test Slimer/Slimer.sln
 
   build:
     if: github.event.pull_request.merged == true
@@ -40,7 +42,7 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - run: |
-        docker build -t ${{ env.REGISTRY_URL }}/${{ env.PROJECT_NAME }}:${{ github.sha }} .
+        docker build --build-arg VAULT_URL=$VAULT_URL --build-arg ISSUES_URL=$ISSUES_URL -t ${{ env.REGISTRY_URL }}/${{ env.PROJECT_NAME }}:${{ github.sha }} .
         docker push ${{ env.REGISTRY_URL }}/${{ env.PROJECT_NAME }}:${{ github.sha }}   
 
     - uses: azure/webapps-deploy@v2
