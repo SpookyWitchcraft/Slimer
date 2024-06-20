@@ -34,7 +34,7 @@ namespace Slimer.Common
             return new StringContent(serialized, Encoding.UTF8, "application/json");
         }
 
-        public HttpRequestMessage CreateBearerRequest(HttpContent content, HttpMethod method, string token, string url, IEnumerable<(string key, string value)> headers = null)
+        public HttpRequestMessage CreateBearerRequest(HttpContent content, HttpMethod method, string token, string url, IEnumerable<(string key, string value)> headers = null!)
         {
             var request = new HttpRequestMessage
             {
