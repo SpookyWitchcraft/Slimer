@@ -35,7 +35,7 @@ var secretOptions = new SecretClientOptions()
     }
 };
 
-var client = new SecretClient(new Uri("https://spookywitchcraft-vault.vault.azure.net/"), new DefaultAzureCredential(), secretOptions);
+var client = new SecretClient(new Uri(Environment.GetEnvironmentVariable("E_VAULT_URL")), new DefaultAzureCredential(), secretOptions);
 
 Task<Azure.Response<KeyVaultSecret>>[] secretTasks =
     [
