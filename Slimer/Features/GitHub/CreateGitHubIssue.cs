@@ -46,7 +46,15 @@ namespace Slimer.Features.GitHub
 
                 var headers = new List<(string, string)> { ("Accept", "application/vnd.github+json"), ("X-GitHub-Api-Version", "2022-11-28"), ("User-Agent", "Slimer") };
 
-                var content = clientService.CreateStringContent(request);
+                var obj = new
+                {
+                    title = request.Title,
+                    body = request.Body,
+                    labels = request.Labels
+                };
+
+                //camelcase issue
+                var content = clientService.CreateStringContent(obj);
                 var httpRequest = clientService.CreateBearerRequest(content, HttpMethod.Post, await token, Environment.GetEnvironmentVariable("E_ISSUES_URL"), headers);
 
                 var response = await clientService.SendAsync<GitHubResponse>(httpRequest);
